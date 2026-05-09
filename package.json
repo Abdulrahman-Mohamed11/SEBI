@@ -1,0 +1,13 @@
+{
+  "name": "sebi",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:mobile": "npm run start -w apps/GIU_FacilityManagement",
+    "dev:api": "npm run dev -w apps/api"
+  }
+}
