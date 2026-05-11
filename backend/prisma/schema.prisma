@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  
+}
+
+enum Role {
+  COMMUNITY_MEMBER
+  FACILITY_MANAGER
+  WORKER
+  ADMIN
+}
+
+enum IssueStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum IssueCategory {
+  ELECTRICAL
+  PLUMBING
+  CLEANING
+  FURNITURE
+  OTHER
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  submittedIssues Issue[]   @relation("SubmittedIssues")
+  assignedIssues  Issue[]   @relation("AssignedIssues")
+  comments        Comment[]
+}
+
+model Issue {
+  id              Int           @id @default(autoincrement())
+  title           String
+  description     String
+  category        IssueCategory
+  status          IssueStatus   @default(PENDING)
+  building        String
+  floor           String?
+  room            String?
+  issuePhotoUrl   String?
+  completionPhotoUrl String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  submittedById   Int
+  assignedToId    Int?
+
+  submittedBy     User          @relation("SubmittedIssues", fields: [submittedById], references: [id])
+  assignedTo      User?         @relation("AssignedIssues", fields: [assignedToId], references: [id])
+  comments        Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  issueId   Int
+  userId    Int
+
+  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
