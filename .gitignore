@@ -1,7 +1,0 @@
-.env
-.env.local
-.env.*.local
-apps/api/.env
-apps/GIU_FacilityManagement/.env
-node_modules
-.expo
